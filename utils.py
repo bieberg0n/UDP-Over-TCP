@@ -1,3 +1,5 @@
+import time
+from threading import Thread
 from config import debug
 
 
@@ -16,6 +18,8 @@ def recv(conn):
         data = conn.recv(1)
         if data == b'\n':
             break
+        elif data == b'':
+            return None
         else:
             buf += data
 
@@ -27,3 +31,18 @@ def recv(conn):
         b += data
 
     return b
+
+
+def rand_err():
+    if debug:
+        t = time.time()
+        return int(str(t)[-1]) < 2
+    else:
+        return False
+
+
+def spawn(target, args=()):
+    t = Thread(target=target, args=args)
+    t.setDaemon(True)
+    t.start()
+    return t
